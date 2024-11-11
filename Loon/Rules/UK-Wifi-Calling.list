@@ -9,4 +9,5 @@ DOMAIN-SUFFIX, vuk-gto.prod.ondemandconnectivity.com
 # CMLinkUK EE
 IP-CIDR,46.68.0.0/17
 # Giffgaff
+DOMAIN-KEYWORD, giffgaff
 IP-CIDR,87.194.0.0/16
