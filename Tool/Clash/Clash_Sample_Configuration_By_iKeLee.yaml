@@ -187,7 +187,6 @@ rules:
   - RULE-SET, AI, 美国策略
   - RULE-SET, TikTok, 美国策略
   - RULE-SET, Netflix, 新国策略
-  - RULE-SET, Emby, 全球选择
   - RULE-SET, iCloudChina, DIRECT
   - RULE-SET, Telegram, 新国策略
   - RULE-SET, ESET_China, DIRECT
