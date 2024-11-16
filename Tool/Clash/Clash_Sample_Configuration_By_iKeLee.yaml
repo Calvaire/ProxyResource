@@ -112,13 +112,13 @@ RuleProviders: &RuleProviders {type: http, behavior: classical, interval: 3600, 
 proxy-groups: 
   - {name: 全球选择, type: select, include-all-providers: true, filter: *FilterAll}
   - {name: 境外下载, type: select, include-all-providers: true, filter: *FilterAll, proxies: [DIRECT]}
-  - {name: 香港策略, type: select, filter: *FilterHK}
-  - {name: 台湾策略, type: select, filter: *FilterTW}
-  - {name: 日本策略, type: select, filter: *FilterJP}
-  - {name: 韩国策略, type: select, filter: *FilterKR}
-  - {name: 新国策略, type: select, filter: *FilterSG}
-  - {name: 美国策略, type: select, filter: *FilterUS}
-  - {name: 英国策略, type: select, filter: *FilterUK}
+  - {name: 香港策略, type: select, include-all-providers: true, filter: *FilterHK}
+  - {name: 台湾策略, type: select, include-all-providers: true, filter: *FilterTW}
+  - {name: 日本策略, type: select, include-all-providers: true, filter: *FilterJP}
+  - {name: 韩国策略, type: select, include-all-providers: true, filter: *FilterKR}
+  - {name: 新国策略, type: select, include-all-providers: true, filter: *FilterSG}
+  - {name: 美国策略, type: select, include-all-providers: true, filter: *FilterUS}
+  - {name: 英国策略, type: select, include-all-providers: true, filter: *FilterUK}
   - {name: 兜底策略, type: select, proxies: [香港策略, 台湾策略, 日本策略, 韩国策略, 新国策略, 美国策略, 英国策略, DIRECT]}
 
 # 订阅规则
