@@ -124,7 +124,7 @@ RuleProviders: &RuleProviders {type: http, behavior: classical, interval: 86400,
 # 策略组
 proxy-groups: 
   - {name: Final, type: select, proxies: [手动, DIRECT]}
-  - {name: 手动, type: select, include-all-providers: true}
+  - {name: PROXY, type: select, include-all-providers: true}
   - {name: HK, type: select, include-all-providers: true, filter: *FilterHK}
   - {name: TW, type: select, include-all-providers: true, filter: *FilterTW}
   - {name: JP, type: select, include-all-providers: true, filter: *FilterJP}
@@ -220,7 +220,7 @@ rules:
   - RULE-SET, Lan, DIRECT
   - RULE-SET, Direct, DIRECT
   - RULE-SET, SteamCN, DIRECT
-  - RULE-SET, Proxy, 手动
+  - RULE-SET, Proxy, PROXY
   - RULE-SET, ChinaDownloadCDN, DIRECT
   - RULE-SET, AI, US
   - RULE-SET, TikTok, US
@@ -228,9 +228,9 @@ rules:
   - RULE-SET, Twitter, US
   - RULE-SET, Youtube, US
   - RULE-SET, iCloudChina, DIRECT
-  - RULE-SET, AppleID, 手动
-  - RULE-SET, Microsoft, 手动
-  - RULE-SET, Google, 手动
+  - RULE-SET, AppleID, PROXY
+  - RULE-SET, Microsoft, PROXY
+  - RULE-SET, Google, PROXY
   - RULE-SET, Telegram, SG
   - RULE-SET, ESET_China, DIRECT
   - GEOIP, CN, DIRECT
