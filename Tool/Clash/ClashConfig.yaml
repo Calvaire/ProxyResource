@@ -93,9 +93,9 @@ dns:
     - "+.wpsmail.net"
     - "+.henzanapp.com"
     - "+.pconline.com.cn"
- proxy-server-nameserver:
+  proxy-server-nameserver:
     - 8.8.8.8
- nameserver:
+  nameserver:
     - 8.8.8.8
     - 1.1.1.1
     - 119.29.29.29
