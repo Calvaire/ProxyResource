@@ -2,6 +2,7 @@
 # 日期：2024-11-01 13:25:28
 # 配置作者：https://t.me/iKeLee
 # 适用版本：所有使用 mihomo 核心的程序
+
 mixed-port: 7890
 
 unified-delay: true
