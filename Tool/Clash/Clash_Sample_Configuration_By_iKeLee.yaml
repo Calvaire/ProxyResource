@@ -100,7 +100,6 @@ dns:
     - 1.1.1.1
     - 119.29.29.29
 
-# 锚点 - 节点订阅的参数 [每小时更新一次订阅节点，每 6 秒一次健康检查]
 NodeParam: &NodeParam {type: http, interval: 86400, health-check: {enable: true, url: 'http://www.google.com/blank.html', interval: 300}}
 
 # 锚点 - 节点订阅
@@ -119,26 +118,20 @@ FilterSG: &FilterSG '^(?=.*((?i)🇸🇬|新加坡|狮|(\b(SG|Singapore)\b)))(?!
 FilterUS: &FilterUS '^(?=.*((?i)🇺🇸|美国|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|(\b(US|United States)\b)))(?!.*((?i)回国|校园|游戏|🎮|(\b(GAME)\b))).*$'
 FilterUK: &FilterUK '^(?=.*((?i)🇬🇧|英国|伦敦|(\b(UK|United Kingdom)\b)))(?!.*((?i)回国|校园|游戏|🎮|(\b(GAME)\b))).*$'
 
-# 策略组参数锚点
-# 锚点 - 时延优选参数 [每 6 秒一次惰性健康检查，容差 20ms，时延超过 2 秒判定为失败，失败 3 次则自动触发健康检查]
-# UrlTest: &UrlTest {type: url-test, interval: 6, tolerance: 20, lazy: true, url: 'http://www.google.com/blank.html', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: true, include-all-providers: true}
-# 锚点 - 故障转移参数 [每 6 秒一次惰性健康检查，时延超过 2 秒判定为失败，失败 3 次则自动触发健康检查]
-# FallBack: &FallBack {type: fallback, interval: 6, lazy: true, url: 'http://www.google.com/blank.html', disable-udp: false, timeout: 2000, max-failed-times: 3, hidden: true, include-all-providers: true}
-# 锚点 - 负载均衡参数 [每 6 秒一次惰性健康检查，时延超过 2 秒判定为失败，失败 3 次则自动触发健康检查]
-# LoadBalance: &LoadBalance {type: load-balance, interval: 6, lazy: true, url: 'http://www.google.com/blank.html', disable-udp: false, strategy: consistent-hashing, timeout: 2000, max-failed-times: 3, hidden: true, include-all-providers: true}
 # 锚点 - 规则参数 [每小时更新一次订阅规则，更新规则时使用直连策略]
 RuleProviders: &RuleProviders {type: http, behavior: classical, interval: 86400, format: yaml, proxy: DIRECT}
 
 # 策略组
 proxy-groups: 
-  - {name: 兜底策略, type: select, proxies: [香港策略, 台湾策略, 日本策略, 韩国策略, 新国策略, 美国策略, 英国策略, DIRECT]}
-  - {name: 香港策略, type: select, include-all-providers: true, filter: *FilterHK}
-  - {name: 台湾策略, type: select, include-all-providers: true, filter: *FilterTW}
-  - {name: 日本策略, type: select, include-all-providers: true, filter: *FilterJP}
-  - {name: 韩国策略, type: select, include-all-providers: true, filter: *FilterKR}
-  - {name: 新国策略, type: select, include-all-providers: true, filter: *FilterSG}
-  - {name: 美国策略, type: select, include-all-providers: true, filter: *FilterUS}
-  - {name: 英国策略, type: select, include-all-providers: true, filter: *FilterUK}
+  - {name: Final, type: select, proxies: [PROXY, DIRECT]}
+  - {name: PROXY, type: select, include-all-providers: true}
+  - {name: HK, type: select, include-all-providers: true, filter: *FilterHK}
+  - {name: TW, type: select, include-all-providers: true, filter: *FilterTW}
+  - {name: JP, type: select, include-all-providers: true, filter: *FilterJP}
+  - {name: KR, type: select, include-all-providers: true, filter: *FilterKR}
+  - {name: SG, type: select, include-all-providers: true, filter: *FilterSG}
+  - {name: US, type: select, include-all-providers: true, filter: *FilterUS}
+  - {name: UK, type: select, include-all-providers: true, filter: *FilterUK}
 
 # 订阅规则
 rule-providers:
@@ -182,6 +175,21 @@ rule-providers:
     path: './rules/iCloudChina.yaml'
     url: 'https://kelee.one/Tool/Clash/Rule/iCloudChina.yaml'
 
+  AppleID:
+    <<: *RuleProviders
+    path: './rules/AppleID.yaml'
+    url: 'https://kelee.one/Tool/Clash/Rule/AppleID.yaml'
+
+  Microsoft:
+    <<: *RuleProviders
+    path: './rules/Microsoft.yaml'
+    url: 'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Microsoft/Microsoft.yaml'
+    
+  Google:
+    <<: *RuleProviders
+    path: './rules/Google.yaml'
+    url: 'https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Google/Google.yaml'
+
   Telegram:
     <<: *RuleProviders
     path: './rules/Telegram.yaml'
@@ -192,17 +200,38 @@ rule-providers:
     path: './rules/ESET_China.yaml'
     url: 'https://kelee.one/Tool/Clash/Rule/ESET_China.yaml'
 
+  SteamCN: 
+    <<: *RuleProviders
+    path: './rules/SteamCN.yaml'
+    url: 'https://blog.tyasaka.xyz/beta/steamcn.yaml'
+
+  Twitter:
+    <<: *RuleProviders
+    path: './rules/Twitter.yaml'
+    url: 'https://github.com/blackmatrix7/ios_rule_script/raw/refs/heads/master/rule/Clash/Twitter/Twitter.yaml'
+  
+  Youtube:
+    <<: *RuleProviders
+    path: './rules/Youtube.yaml'
+    url: 'https://github.com/blackmatrix7/ios_rule_script/raw/refs/heads/master/rule/Clash/YouTube/YouTube.yaml.yaml'
+
 # 规则指向
 rules:
   - RULE-SET, Lan, DIRECT
   - RULE-SET, Direct, DIRECT
-  - RULE-SET, Proxy, 兜底策略
+  - RULE-SET, SteamCN, DIRECT
+  - RULE-SET, Proxy, PROXY
   - RULE-SET, ChinaDownloadCDN, DIRECT
-  - RULE-SET, AI, 美国策略
-  - RULE-SET, TikTok, 美国策略
-  - RULE-SET, Netflix, 新国策略
+  - RULE-SET, AI, US
+  - RULE-SET, TikTok, US
+  - RULE-SET, Netflix, SG
+  - RULE-SET, Twitter, US
+  - RULE-SET, Youtube, US
   - RULE-SET, iCloudChina, DIRECT
-  - RULE-SET, Telegram, 新国策略
+  - RULE-SET, AppleID, PROXY
+  - RULE-SET, Microsoft, PROXY
+  - RULE-SET, Google, PROXY
+  - RULE-SET, Telegram, SG
   - RULE-SET, ESET_China, DIRECT
   - GEOIP, CN, DIRECT
-  - MATCH, 兜底策略
+  - MATCH, Final
