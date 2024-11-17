@@ -54,7 +54,7 @@ sniffer:
     - "+.mi.com"
 
 tun:
-  enable: true
+  enable: false
   stack: system
   dns-hijack:
     - any:53
@@ -93,9 +93,6 @@ dns:
     - "+.wpsmail.net"
     - "+.henzanapp.com"
     - "+.pconline.com.cn"
-  default-nameserver:
-    - 223.5.5.5
-    - 223.6.6.6
   proxy-server-nameserver:
     - 8.8.8.8
   nameserver:
