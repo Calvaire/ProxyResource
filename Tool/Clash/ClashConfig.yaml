@@ -15,10 +15,10 @@ enable-process: true
 find-process-mode: strict
 global-client-fingerprint: chrome
 
-allow-lan: true
+allow-lan: false
 mode: rule
 log-level: info
-ipv6: true
+ipv6: false
 udp: true
 
 external-controller: 0.0.0.0:9090
@@ -67,7 +67,7 @@ dns:
   enable: true
   prefer-h3: true
   listen: 0.0.0.0:53
-  ipv6: true
+  ipv6: false
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.0/15
   fake-ip-filter:
