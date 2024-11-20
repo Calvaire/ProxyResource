@@ -52,10 +52,12 @@ sniffer:
     - +.v2ex.com
   skip-domain:
     - "+.mi.com"
+    - "+.push.apple.com"
+    - "+.apple.com"
 
 tun:
   enable: true
-  stack: system
+  stack: mixed
   dns-hijack:
     - any:53
     - tcp://any:53
