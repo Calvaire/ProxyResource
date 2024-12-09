@@ -1,0 +1,315 @@
+# With https://blog.tyasaka.xyz/
+# 作者Telegram:  @christine_tys
+mixed-port: 7890
+redir-port: 7891
+tproxy-port: 1536
+allow-lan: true
+mode: rule
+geodata-mode: true
+geodata-loader: standard
+unified-delay: true
+log-level: debug
+ipv6: true
+external-controller: 0.0.0.0:9090
+tcp-concurrent: true
+enable-process: true
+find-process-mode: strict
+global-client-fingerprint: chrome
+keep-alive-interval: 30
+geo-auto-update: true
+geo-update-interval: 24
+geox-url:
+  geoip: "https://ghp.ci/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.dat"
+  geosite: "https://ghp.ci/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat"
+  mmdb: "https://ghp.ci/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country.mmdb"
+  asn: "https://ghp.ci/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/GeoLite2-ASN.mmdb"
+profile:
+  store-selected: true
+  store-fake-ip: true
+sniffer:
+  enable: true
+  force-dns-mapping: true
+  parse-pure-ip: true
+  override-destination: true
+  sniff:
+    HTTP:
+      ports: [80, 8080-8880]
+      override-destination: true
+    TLS:
+      ports: [443, 8443]
+    QUIC:
+      ports: [443, 8443]
+  force-domain:
+    - "+.v2ex.com"
+  skip-domain:
+    - "+.mi.com"
+tun:
+  enable: false
+  device: MihomoCore
+  stack: mixed
+  mtu: 1500
+  dns-hijack:
+    - "any:53"
+    - "tcp://any:53"
+  auto-route: true
+  auto-detect-interface: true
+dns:
+  enable: true
+  prefer-h3: true
+  use-system-hosts: true
+  listen: 0.0.0.0:1053
+  ipv6: true
+  respect-rules: true
+  enhanced-mode: fake-ip
+  fake-ip-filter-mode: blacklist
+  fake-ip-range: 198.18.0.0/16
+  fake-ip-filter:
+    - "*"
+    - "+.lan"
+    - "connect.rom.miui.com"
+    - "+.miwifi.com"
+    - "+.ntp.org"
+    - "+.u-tools.cn"
+    - "+.mediatek.com"
+    - "+.cfprefer1.xyz"
+    - "+.wetab.link"
+    - "+.tyasaka.xyz"
+    # QQ
+    - "localhost.ptlogin2.qq.com"
+    - "localhost.sec.qq.com"
+    # WeChat
+    - "localhost.work.weixin.qq.com"
+    - "+.weixin.qq.com"
+    - "+.wechat.com"
+    # Windows
+    - "time.windows.com"
+    - "+.msftconnecttest.com"
+    - "+.msftncsi.com"
+    - "+.wpsmail.net"
+    - "+.henzanapp.com"
+    - "+.pconline.com.cn"
+  defult-namerserver:
+    - https://162.159.36.1/dns-query
+  nameserver:
+    # CLOUDFLARE
+    - https://cloudflare-dns.com/dns-query
+    # CLOUDFLARE WARP
+    - https://162.159.36.1/dns-query
+    - https://162.159.46.1/dns-query
+    # ONEDNS
+    - https://208.67.222.222/dns-query
+    - https://208.67.220.220/dns-query
+  proxy-server-nameserver:
+    - 117.50.22.22
+    - 8.8.8.8
+  fallback:
+    # (Google DNS)
+    - https://dns.google/dns-query
+
+p: &p { type: http, udp: true, ip-version: ipv6-prefer, smux: { enable: true } }
+u: &u
+  use:
+    - 1.provider1
+    - 2.provider2
+
+proxy-providers:
+  1.provider1:
+    <<: *p
+    type: http
+    # 节点文件 p1对应provider1
+    path: ./proxy_provider/p1.yaml
+    # 订阅 链接
+    url: https://blog.tyasaka.xyz/
+    # 自动更新时间 21600(秒) / 3600 = 6小时
+    interval: 21600
+    # 节点名称前缀 p1
+    override:
+      additional-prefix: "p1 |"
+
+  2.provider2:
+    <<: *p
+    type: http
+    path: ./proxy_provider/p2.yaml
+    url: https://blog.tyasaka.xyz/
+    interval: 21600
+    override:
+      additional-prefix: "p2 |"
+
+proxy-groups:
+  - {
+      name: 🎯Mode,
+      type: select,
+      proxies: [
+        🚀Manual,
+        ♻️ SELECT1,
+        ♻️ SELECT2,
+        ♻️ SELECT3,
+        🍃DirectMode,
+        ♨️Auto,
+      ],
+    }
+  - {
+      name: 🚀Manual,
+      type: select,
+      proxies: [],
+      <<: *u,
+      url: "https://cp.cloudflare.com/generate_204",
+      interval: 300,
+      lazy: false,
+      timeout: 5000,
+      max-failed-times: 5,
+    }
+  - { name: ♻️ SELECT1, type: select, proxies: [🚀Manual], <<: *u }
+  - { name: ♻️ SELECT2, type: select, proxies: [🚀Manual], <<: *u }
+  - {
+      name: ♻️ SELECT3,
+      type: select,
+      proxies: [🚀Manual, 🍃DirectMode],
+      <<: *u,
+    }
+  - {
+      name: 🎮️Steam,
+      type: select,
+      proxies: [🎯Mode, ♻️ SELECT1, ♻️ SELECT2, ♻️ SELECT3],
+    }
+  - {
+      name: 💎Emby,
+      type: select,
+      proxies: [♻️ SELECT1, ♻️ SELECT2, ♻️ SELECT3],
+      <<: *u,
+    }
+  - {
+      name: 🪁Microsoft,
+      type: select,
+      proxies: [
+        🍃DirectMode,
+        🎯Mode,
+        ♻️ SELECT1,
+        ♻️ SELECT2,
+        ♻️ SELECT3,
+        ♨️Auto,
+      ],
+    }
+  - {
+      name: 🤖OpenAI,
+      type: select,
+      proxies: [♻️ SELECT1, ♻️ SELECT2, ♻️ SELECT3],
+      <<: *u,
+    }
+  - {
+      name: 💬Telegram,
+      type: select,
+      proxies: [🎯Mode, ♻️ SELECT1, ♻️ SELECT2, ♻️ SELECT3],
+      <<: *u,
+    }
+  - {
+      name: 🧭Google,
+      type: select,
+      proxies: [🎯Mode, ♻️ SELECT1, ♻️ SELECT2, ♻️ SELECT3],
+    }
+  - { name: 🎏Final, type: select, proxies: [🎯Mode] }
+  - { name: 🍃DirectMode, type: select, proxies: [DIRECT] }
+  - {
+      name: ♨️Auto,
+      type: url-test,
+      interval: 600,
+      url: "https://cp.cloudflare.com/generate_204",
+      proxies: [],
+      <<: *u,
+    }
+
+rule-providers:
+  # 规则组合
+  Telegram:
+    type: http
+    behavior: classical
+    format: yaml
+    path: ./rule/Telegram.yaml
+    url: "https://blog.tyasaka.xyz/beta/Telegram.yaml"
+    interval: 43200
+  Google:
+    type: http
+    behavior: classical
+    format: yaml
+    path: ./rule/Google.yaml
+    url: "https://blog.tyasaka.xyz/beta/Google.yaml"
+    interval: 43200
+  Steam:
+    type: http
+    format: yaml
+    behavior: classical
+    url: "https://blog.tyasaka.xyz/beta/steam.yaml"
+    path: ./rule/steam.yaml
+    interval: 43200
+  SteamCN:
+    type: http
+    behavior: classical
+    format: yaml
+    url: "https://blog.tyasaka.xyz/beta/steamcn.yaml"
+    path: ./rule/steamcn.yaml
+    interval: 43200
+  Microsoft:
+    type: http
+    behavior: classical
+    format: yaml
+    path: ./rule/Microsoft.yaml
+    url: "https://blog.tyasaka.xyz/beta/Microsoft.yaml"
+    interval: 43200
+  OpenAI:
+    type: http
+    behavior: classical
+    format: yaml
+    url: "https://ghp.ci/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/OpenAI/OpenAI.yaml"
+    path: ./rule/openai.yaml
+    interval: 43200
+  RE:
+    type: http
+    behavior: classical
+    format: yaml
+    url: "https://blog.tyasaka.xyz/beta/re.yaml"
+    path: ./rule/re.yaml
+    interval: 43200
+  Emby:
+    type: http
+    behavior: classical
+    format: yaml
+    url: "https://blog.tyasaka.xyz/beta/emby.yaml"
+    path: ./rule/emby.yaml
+    interval: 43200
+  FCM:
+    type: http
+    behavior: classical
+    format: yaml
+    url: "https://blog.tyasaka.xyz/beta/fcm.yaml"
+    path: ./rule/fcm.yaml
+    interval: 43200
+
+rules:
+  # 解决Telegram持续转圈问题，可能引发闪退
+  - IP-CIDR,95.161.76.100/31,REJECT
+  # DNS Rules
+  - IP-CIDR,162.159.36.1/32,DIRECT
+  - IP-CIDR,162.159.46.1/32,DIRECT
+  - IP-CIDR,117.50.22.22/32,DIRECT
+  - IP-CIDR,52.80.66.66/32,DIRECT
+  - IP-CIDR,1.1.1.1/32,DIRECT
+  - DOMAIN,cloudflare-dns.com,DIRECT
+  - DOMAIN,dns.google,DIRECT
+  - IP-CIDR,208.67.222.222/32,DIRECT
+  - IP-CIDR,208.67.222.220/32,DIRECT
+  - IP-CIDR6,2400:7fc0:849e:200::4/128,DIRECT
+  # - Rule Group
+  - RULE-SET,DR,🍃DirectMode
+  - RULE-SET,Google,🧭Google
+  - RULE-SET,Microsoft,🪁Microsoft
+  - RULE-SET,Telegram,💬Telegram
+  - RULE-SET,SteamCN,🍃DirectMode
+  - RULE-SET,Steam,🎮️Steam
+  - RULE-SET,Emby,💎Emby
+  - RULE-SET,OpenAI,🤖OpenAI
+  - RULE-SET,FCM,🍃DirectMode
+  - RULE-SET,RE,REJECT
+  # GEO Rule
+  - GEOSITE,CN,🍃DirectMode
+  - GEOIP,CN,🍃DirectMode
+  - MATCH,🎏Final
