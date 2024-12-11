@@ -121,9 +121,9 @@ NodeParam: &NodeParam {type: http, udp: true, interval: 86400}
 # 锚点 - 节点订阅
 proxy-providers: 
   机场名称1:
-    url: '机场1的订阅URL'
+    url: 机场1的订阅URL
     <<: *NodeParam
-    path: './proxy_providers/机场名称1.yaml'
+    path: ./proxy_providers/机场名称1.yaml
 
 # 锚点 - 节点筛选组
 FilterHK: &FilterHK '^(?=.*((?i)🇭🇰|香港|(\b(HK|Hong)\b)))(?!.*((?i)回国|校园|游戏|🎮|(\b(GAME)\b))).*$'
