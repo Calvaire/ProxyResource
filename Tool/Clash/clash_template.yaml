@@ -1,5 +1,5 @@
-# With https://blog.tyasaka.xyz/
-# 作者Telegram:  @christine_tys
+# With https://realiti.me
+# 作者_TG https://t.me/christine_tys
 mixed-port: 7890
 redir-port: 7891
 tproxy-port: 1536
@@ -88,20 +88,16 @@ dns:
     - "+.wpsmail.net"
     - "+.henzanapp.com"
     - "+.pconline.com.cn"
-  defult-namerserver:
-    - https://162.159.36.1/dns-query
+  default-namerserver:
+    - 223.5.5.5
   nameserver:
-    # CLOUDFLARE
-    - https://cloudflare-dns.com/dns-query
-    # CLOUDFLARE WARP
-    - https://162.159.36.1/dns-query
-    - https://162.159.46.1/dns-query
-    # ONEDNS
-    - https://208.67.222.222/dns-query
-    - https://208.67.220.220/dns-query
+    - 64.6.64.6
+    - 117.50.10.10
+    - "2402:4e00:1::"
+    - "240e:56:4000:8000::69"
   proxy-server-nameserver:
-    - 117.50.22.22
-    - 8.8.8.8
+    - 117.50.10.10
+    - 119.29.29.29
   fallback:
     # (Google DNS)
     - https://dns.google/dns-query
@@ -134,7 +130,6 @@ proxy-providers:
     interval: 21600
     override:
       additional-prefix: "p2 |"
-
 proxy-groups:
   - {
       name: 🎯Mode,
@@ -153,7 +148,7 @@ proxy-groups:
       type: select,
       proxies: [],
       <<: *u,
-      url: "https://cp.cloudflare.com/generate_204",
+      url: "http://cp.cloudflare.com/generate_204",
       interval: 300,
       lazy: false,
       timeout: 5000,
@@ -219,7 +214,6 @@ proxy-groups:
     }
 
 rule-providers:
-  # 规则组合
   Telegram:
     type: http
     behavior: classical
@@ -262,13 +256,6 @@ rule-providers:
     url: "https://ghp.ci/https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/OpenAI/OpenAI.yaml"
     path: ./rule/openai.yaml
     interval: 43200
-  RE:
-    type: http
-    behavior: classical
-    format: yaml
-    url: "https://blog.tyasaka.xyz/beta/re.yaml"
-    path: ./rule/re.yaml
-    interval: 43200
   Emby:
     type: http
     behavior: classical
@@ -289,17 +276,11 @@ rules:
   - IP-CIDR,95.161.76.100/31,REJECT
   # DNS Rules
   - IP-CIDR,162.159.36.1/32,DIRECT
-  - IP-CIDR,162.159.46.1/32,DIRECT
-  - IP-CIDR,117.50.22.22/32,DIRECT
-  - IP-CIDR,52.80.66.66/32,DIRECT
-  - IP-CIDR,1.1.1.1/32,DIRECT
-  - DOMAIN,cloudflare-dns.com,DIRECT
-  - DOMAIN,dns.google,DIRECT
-  - IP-CIDR,208.67.222.222/32,DIRECT
-  - IP-CIDR,208.67.222.220/32,DIRECT
-  - IP-CIDR6,2400:7fc0:849e:200::4/128,DIRECT
+  - IP-CIDR,64.6.64.6/32,DIRECT
+  - IP-CIDR,117.50.10.10/32,DIRECT
+  - IP-CIDR6,2402:4e00:1::/128,DIRECT
+  - IP-CIDR6,240e:56:4000:8000::69/128,DIRECT
   # - Rule Group
-  - RULE-SET,DR,🍃DirectMode
   - RULE-SET,Google,🧭Google
   - RULE-SET,Microsoft,🪁Microsoft
   - RULE-SET,Telegram,💬Telegram
@@ -308,7 +289,6 @@ rules:
   - RULE-SET,Emby,💎Emby
   - RULE-SET,OpenAI,🤖OpenAI
   - RULE-SET,FCM,🍃DirectMode
-  - RULE-SET,RE,REJECT
   # GEO Rule
   - GEOSITE,CN,🍃DirectMode
   - GEOIP,CN,🍃DirectMode
