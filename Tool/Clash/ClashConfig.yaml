@@ -1,12 +1,8 @@
 # mihomo 配置
-# 日期：2024-11-01 13:25:28
-# 配置作者：https://t.me/iKeLee
-# 适用版本：所有使用 mihomo 核心的程序
-
-mixed-port: 7890
+# With https://realiti.me
 
 unified-delay: true
-geodata-mode: false
+geodata-mode: true
 geodata-loader: standard
 geo-auto-update: true
 geo-update-interval: 24
@@ -17,7 +13,7 @@ global-client-fingerprint: chrome
 
 allow-lan: false
 mode: rule
-log-level: debug
+log-level: info
 ipv6: false
 udp: true
 
@@ -26,10 +22,10 @@ external-controller: 0.0.0.0:9090
 # external-ui-url: 'https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip'
 
 geox-url:
-  # geoip: "https://ghp.ci/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.dat"
-  # geosite: "https://ghp.ci/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat"
-  mmdb: "https://ghp.ci/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country.mmdb"
-  asn: "https://ghp.ci/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/GeoLite2-ASN.mmdb"
+  geoip: "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.dat"
+  geosite: "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat"
+  mmdb: "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country.mmdb"
+  asn: "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/GeoLite2-ASN.mmdb"
   
 profile:
   store-selected: true
@@ -72,7 +68,7 @@ dns:
   use-system-hosts: true
   listen: 0.0.0.0:1053
   ipv6: true
-  respect-rules: true
+  respect-rules: false
   enhanced-mode: fake-ip
   fake-ip-filter-mode: blacklist
   fake-ip-range: 198.18.0.0/16
@@ -82,11 +78,6 @@ dns:
     - "connect.rom.miui.com"
     - "+.miwifi.com"
     - "+.ntp.org"
-    - "+.u-tools.cn"
-    - "+.mediatek.com"
-    - "+.cfprefer1.xyz"
-    - "+.wetab.link"
-    - "+.tyasaka.xyz"
     # QQ
     - "localhost.ptlogin2.qq.com"
     - "localhost.sec.qq.com"
@@ -101,19 +92,13 @@ dns:
     - "+.wpsmail.net"
     - "+.henzanapp.com"
     - "+.pconline.com.cn"
-  default-namerserver:
-    - 223.5.5.5
   nameserver:
-    - 64.6.64.6
-    - 117.50.10.10
-    - "2402:4e00:1::"
-    - "240e:56:4000:8000::69"
+    - 114.114.114
+  direct-nameserver:
+    - system
   proxy-server-nameserver:
     - 117.50.10.10
     - 119.29.29.29
-  fallback:
-    # (Google DNS)
-    - https://dns.google/dns-query
 
 # 锚点 - 节点订阅的参数 [每24小时更新一次订阅节点]
 NodeParam: &NodeParam {type: http, udp: true, interval: 86400}
@@ -133,6 +118,7 @@ FilterKR: &FilterKR "^(?=.*((?i)🇰🇷|韩国|韓|首尔|(\b(KR|Korea)\b)))(?!
 FilterSG: &FilterSG "^(?=.*((?i)🇸🇬|新加坡|狮|(\b(SG|Singapore)\b)))(?!.*((?i)回国|校园|游戏|🎮|(\b(GAME)\b))).*$"
 FilterUS: &FilterUS "^(?=.*((?i)🇺🇸|美国|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|(\b(US|United States)\b)))(?!.*((?i)回国|校园|游戏|🎮|(\b(GAME)\b))).*$"
 FilterUK: &FilterUK "^(?=.*((?i)🇬🇧|英国|伦敦|(\b(UK|United Kingdom)\b)))(?!.*((?i)回国|校园|游戏|🎮|(\b(GAME)\b))).*$"
+FilterOther: &FilterOther '^(?=.*(.))(?!.*((?i)群|邀请|返利|循环|官网|客服|网站|网址|获取|订阅|流量|到期|机场|下次|版本|官址|备用|过期|已用|联系|邮箱|工单|贩卖|通知|倒卖|防止|国内|地址|频道|无法|说明|使用|提示|特别|访问|支持|教程|关注|更新|作者|加入|超时|收藏|(\b(USE|USED|TOTAL|EXPIRE|EMAIL|Panel|Channel|Author)(\d+)?\b|(\d{4}-\d{2}-\d{2}|\dG)))).*$'
 
 # 锚点 - 规则参数 [每小时更新一次订阅规则，更新规则时使用直连策略]
 RuleProviders: &RuleProviders {type: http, behavior: classical, interval: 86400, format: yaml, proxy: DIRECT}
@@ -148,6 +134,7 @@ proxy-groups:
   - {name: SG, type: select, include-all-providers: true, filter: *FilterSG}
   - {name: US, type: select, include-all-providers: true, filter: *FilterUS}
   - {name: UK, type: select, include-all-providers: true, filter: *FilterUK}
+  - {name: OTHER, type: select, include-all-providers: true, filter: *FilterOther, exclude-filter: *FilterHK, *FilterTW, *FilterJP, *FilterKR, *FilterUS, *FilterUK}
 
 # 订阅规则
 rule-providers:
@@ -198,12 +185,6 @@ rule-providers:
 
 # 规则指向
 rules:
-  # DNS Rules
-  - IP-CIDR,162.159.36.1/32,DIRECT
-  - IP-CIDR,64.6.64.6/32,DIRECT
-  - IP-CIDR,117.50.10.10/32,DIRECT
-  - IP-CIDR6,2402:4e00:1::/128,DIRECT
-  - IP-CIDR6,240e:56:4000:8000::69/128,DIRECT
   # Rule Group
   - RULE-SET, Lan, DIRECT
   - RULE-SET, Direct, DIRECT
@@ -217,5 +198,7 @@ rules:
   - RULE-SET, Microsoft, PROXY
   - RULE-SET, Google, PROXY
   - RULE-SET, Telegram, SG
+  # GEO Rule
+  - GEOSITE, CN, DIRECT
   - GEOIP, CN, DIRECT
   - MATCH, Final
